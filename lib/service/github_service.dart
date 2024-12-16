@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:io';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:github_api_integration/model/code_content.dart';
 import 'package:github_api_integration/model/code_view.dart';
@@ -34,15 +35,18 @@ class GitHubService {
     }
   }
 
-  Future<List<Issue>> fetchIssues(String owner, String repo) async {
-    final response = await http.get(Uri.parse('$baseUrl/repos/$owner/$repo/issues'), headers: headers);
-    if (response.statusCode == 200) {
-      final List<dynamic> data = json.decode(response.body);
-      return data.map((json) => Issue.fromJson(json)).toList();
-    } else {
-      throw Exception('Failed to load issues: ${response.reasonPhrase}');
-    }
+ Future<List<Issue>> fetchComments(String owner, String repo, int issueNumber) async {
+  final response = await http.get(
+    Uri.parse('$baseUrl/repos/$owner/$repo/issues/$issueNumber/comments'),
+    headers: headers,
+  );
+  if (response.statusCode == 200) {
+    final List<dynamic> data = json.decode(response.body);
+    return data.map((json) => Issue.fromJson(json)).toList();
+  } else {
+    throw Exception('Failed to load comments: ${response.reasonPhrase}');
   }
+}
 
 Future<List<CodeContent>> fetchRepositoryContents(String owner, String repo) async {
   final response = await http.get(Uri.parse('$baseUrl/repos/$owner/$repo/contents'),headers: headers);
@@ -64,5 +68,70 @@ Future<CodeViewModel> fetchFileContent(String fileName, String fileUrl) async {
   } else {
     throw Exception('Failed to load file content: ${response.reasonPhrase}');
   }
+// }
+// Future<void> monitorNewComments(String owner, String repo, int issueNumber) async {
+//   try {
+//     final comments = await fetchComments(owner, repo, issueNumber);
+
+//     if (comments.isNotEmpty) {
+//       for (var comment in comments) {
+//         final text = "New comment on $repo:\n- **User:** ${comment.user?.username}\n- **Comment:** ${comment.body}";
+//         await sendMessageToSlack(text);
+//       }
+//     } else {
+//       print('No new comments found.');
+//     }
+//   } catch (error) {
+//     print('Error monitoring comments: $error');
+//   }
+ }
+
+Future<void> monitorNewComments(String owner, String repo, int issueNumber) async {
+  try {
+    final response = await http.get(
+      Uri.parse('$baseUrl/repos/$owner/$repo/issues/$issueNumber/comments'),
+       headers: headers,
+    );
+
+    if (response.statusCode == 200) {
+      final List<dynamic> comments = json.decode(response.body);
+
+      if (comments.isNotEmpty) {
+        for (var comment in comments) {
+          final user = comment['user']['login'];
+          final body = comment['body'];
+
+          final message = 'New comment in $repo by $user: $body';
+          print(message);
+          await sendMessageToSlack(message); // Slack’ga xabar yuborish
+        }
+      } else {
+        print('No new comments found.');
+      }
+    } else {
+      throw Exception('Failed to fetch comments: ${response.reasonPhrase}');
+    }
+  } catch (error) {
+    print('Error monitoring comments: $error');
+  }
 }
+Future<void> sendMessageToSlack(String text) async {
+  final webhookUrl = dotenv.env['SLACK_WEBHOOK_URL'] ?? '';
+  if (webhookUrl.isEmpty) {
+    throw Exception('Slack Webhook URL not configured');
+  }
+
+  final response = await http.post(
+    Uri.parse(webhookUrl),
+    headers: {'Content-Type': 'application/json'},
+    body: json.encode({'text': text}),
+  );
+
+  if (response.statusCode != 200) {
+    throw Exception('Failed to send message to Slack: ${response.reasonPhrase}');
+  }
 }
+
+
+}
+
