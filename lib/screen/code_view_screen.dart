@@ -6,7 +6,7 @@ class CodeViewScreen extends StatefulWidget {
   final String fileName;
   final String fileUrl;
 
-  CodeViewScreen({required this.fileName, required this.fileUrl});
+  const CodeViewScreen({super.key, required this.fileName, required this.fileUrl});
 
   @override
   _CodeViewScreenState createState() => _CodeViewScreenState();
@@ -50,14 +50,14 @@ class _CodeViewScreenState extends State<CodeViewScreen> {
         title: Text(widget.fileName),
       ),
       body: _isLoading
-          ? Center(child: CircularProgressIndicator())
+          ? const Center(child: CircularProgressIndicator())
           : _codeViewModel == null
-              ? Center(child: Text('No content available'))
+              ? const Center(child: Text('No content available'))
               : SingleChildScrollView(
                   padding: const EdgeInsets.all(16.0),
                   child: SelectableText(
                     _codeViewModel!.content,
-                    style: TextStyle(fontFamily: 'monospace', fontSize: 14),
+                    style: const TextStyle(fontFamily: 'monospace', fontSize: 14),
                   ),
                 ),
     );

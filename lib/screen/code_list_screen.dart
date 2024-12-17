@@ -7,7 +7,7 @@ class CodeListScreen extends StatefulWidget {
   final String owner;
   final String repoName;
 
-  CodeListScreen({required this.owner, required this.repoName});
+  const CodeListScreen({super.key, required this.owner, required this.repoName});
 
   @override
   _CodeListScreenState createState() => _CodeListScreenState();
@@ -49,9 +49,9 @@ class _CodeListScreenState extends State<CodeListScreen> {
         title: Text('${widget.repoName} Contents'),
       ),
       body: _isLoading
-          ? Center(child: CircularProgressIndicator())
+          ? const Center(child: CircularProgressIndicator())
           : _contents.isEmpty
-              ? Center(child: Text('No contents found'))
+              ? const Center(child: Text('No contents found'))
               : ListView.builder(
                   itemCount: _contents.length,
                   itemBuilder: (context, index) {

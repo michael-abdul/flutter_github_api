@@ -6,7 +6,7 @@ import 'package:github_api_integration/service/github_service.dart';
 class RepositoryScreen extends StatefulWidget {
   final String username;
 
-  RepositoryScreen({required this.username});
+  const RepositoryScreen({super.key, required this.username});
 
   @override
   _RepositoryScreenState createState() => _RepositoryScreenState();
@@ -47,9 +47,9 @@ class _RepositoryScreenState extends State<RepositoryScreen> {
         title: Text('${widget.username} Repositories'),
       ),
       body: _isLoading
-          ? Center(child: CircularProgressIndicator())
+          ? const Center(child: CircularProgressIndicator())
           : _repositories.isEmpty
-              ? Center(child: Text('No repositories found'))
+              ? const Center(child: Text('No repositories found'))
               : ListView.builder(
                   itemCount: _repositories.length,
                   itemBuilder: (context, index) {
@@ -57,7 +57,7 @@ class _RepositoryScreenState extends State<RepositoryScreen> {
                     return ListTile(
                       title: Text(repo.name),
                       subtitle: Text(repo.owner),
-                      trailing: Icon(Icons.arrow_forward),
+                      trailing: const Icon(Icons.arrow_forward),
                       onTap: () {
                         Navigator.push(
                           context,

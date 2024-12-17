@@ -5,22 +5,24 @@ import 'package:github_api_integration/screen/user_screen.dart';
 class HomeScreen extends StatelessWidget {
   final TextEditingController _usernameController = TextEditingController();
 
+  HomeScreen({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('GitHub Integration')),
+      appBar: AppBar(title: const Text('GitHub Integration')),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
           children: [
             TextField(
               controller: _usernameController,
-              decoration: InputDecoration(
+              decoration: const InputDecoration(
                 labelText: 'Enter GitHub Username',
                 border: OutlineInputBorder(),
               ),
             ),
-            SizedBox(height: 16),
+            const SizedBox(height: 16),
             ElevatedButton(
               onPressed: () {
                 final username = _usernameController.text.trim();
@@ -33,7 +35,7 @@ class HomeScreen extends StatelessWidget {
                   );
                 }
               },
-              child: Text('Search User'),
+              child: const Text('Search User'),
             ),
           ],
         ),

@@ -6,7 +6,7 @@ import 'repository_screen.dart';
 class UserScreen extends StatefulWidget {
   final String username;
 
-  UserScreen({required this.username});
+  const UserScreen({super.key, required this.username});
 
   @override
   _UserScreenState createState() => _UserScreenState();
@@ -40,9 +40,9 @@ class _UserScreenState extends State<UserScreen> {
     return Scaffold(
       appBar: AppBar(title: Text(widget.username)),
       body: _isLoading
-          ? Center(child: CircularProgressIndicator())
+          ? const Center(child: CircularProgressIndicator())
           : _user == null
-              ? Center(child: Text('User not found'))
+              ? const Center(child: Text('User not found'))
               : Column(
                   children: [
                     ListTile(
@@ -65,7 +65,7 @@ class _UserScreenState extends State<UserScreen> {
                           ),
                         );
                       },
-                      child: Text('View Repositories'),
+                      child: const Text('View Repositories'),
                     ),
                   ],
                 ),

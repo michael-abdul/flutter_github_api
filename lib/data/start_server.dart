@@ -6,7 +6,7 @@ import 'package:github_api_integration/service/github_service.dart';
 void startServer() async {
   final server = await HttpServer.bind(InternetAddress.loopbackIPv4, 8080);
   print('Server started on http://localhost:8080');
-  final GitHubService _githubService = GitHubService();
+  final GitHubService githubService = GitHubService();
   await for (HttpRequest request in server) {
     if (request.method == 'POST' && request.uri.path == '/monitor') {
       // Request body'ni o‘qib olish
@@ -18,7 +18,7 @@ void startServer() async {
       final issueNumber = data['issueNumber'];
 
       try {
-        await _githubService.monitorNewComments(owner, repo, issueNumber);
+        await githubService.monitorNewComments(owner, repo, issueNumber);
         request.response
           ..statusCode = HttpStatus.ok
           ..write('Monitoring new comments for $repo...');
